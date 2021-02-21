@@ -1,4 +1,4 @@
-package digit_recognition
+package main
 
 import (
 	"fmt"
@@ -7,22 +7,27 @@ import (
 )
 
 type Network struct {
-	numLayer int
-	size     []int
-	bias     []float64
-	weight   []float64
+	NumLayer int
+	Sizes    []int
+	Bias     []float64
+	Weight   []float64
 }
 
-func NewNetwork(size []int) (*Network, error) {
+func NewNetwork(sizes []int) (*Network, error) {
 	if len(size) < 2 {
 		return nil, fmt.Errorf("must have at least two layer of network")
 	}
 
+	Bias := [][]float64{}
+	for _, size := range sizes {
+
+	}
+
 	n := &Network{
-		numLayer: len(size),
-		size:     size,
-		bias:     randomArray(len(size)),
-		weight:   randomArray(len(size)),
+		NumLayer: len(sizes),
+		Sizes:    sizes,
+		Bias:     randomArray(len(sizes)),
+		Weight:   randomArray(len(sizes)),
 	}
 
 	return n, nil
@@ -36,13 +41,10 @@ func randomArray(size int) []float64 {
 	return arr
 }
 
+/*
 func (n *Network) feedForward(in []int) {
-	for _, b := range n.bias {
-		for _, w := range n.weight {
-			in = mat.dot
-		}
-	}
-}
+	return nil
+}*/
 
 // Basic Function
 
