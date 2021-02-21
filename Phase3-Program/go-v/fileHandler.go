@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"image"
+	"image/png"
 	"os"
 )
 
-func save(net Network) {
+func save(net NNetwork) {
 	h, err := os.Create("data/hweights.model")
 	defer h.Close()
 	if err == nil {
@@ -18,7 +21,7 @@ func save(net Network) {
 }
 
 // load a neural network from file
-func load(net *Network) {
+func load(net *NNetwork) {
 	h, err := os.Open("data/hweights.model")
 	defer h.Close()
 	if err == nil {
@@ -36,9 +39,9 @@ func load(net *Network) {
 
 // predict a number from an image
 // image should be 28 x 28 PNG file
-func predictFromImage(net Network, path string) int {
+func predictFromImage(net NNetwork, path string) int {
 	input := dataFromImage(path)
-	output := net.Predict(input)
+	output := net.Predicate(input)
 	matrixPrint(output)
 	best := 0
 	highest := 0.0
@@ -82,3 +85,4 @@ func dataFromImage(filePath string) (pixels []float64) {
 		pixels[i] = (float64(255-gray.Pix[i]) / 255.0 * 0.999) + 0.001
 	}
 	return
+}

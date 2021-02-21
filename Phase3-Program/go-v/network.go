@@ -4,7 +4,8 @@ import (
 	"gonum.org/v1/gonum/mat"
 )
 
-type Network struct {
+// NNetwork is the struct of neural network
+type NNetwork struct {
 	inputs        int
 	hiddens       int
 	outputs       int
@@ -13,8 +14,10 @@ type Network struct {
 	learningRate  float64
 }
 
-func CreateNetwork(input, hidden, output int, rate float64) (net Network) {
-	net = Network{
+// CreateNetwork initialize function of create a neural network
+func CreateNetwork(input, hidden, output int, rate float64) (net NNetwork) {
+
+	net = NNetwork{
 		inputs:       input,
 		hiddens:      hidden,
 		outputs:      output,
@@ -25,7 +28,8 @@ func CreateNetwork(input, hidden, output int, rate float64) (net Network) {
 	return
 }
 
-func (net Network) Predicate(inputData []float64) mat.Matrix {
+// Predicate predict the input data using an forward propagation
+func (net NNetwork) Predicate(inputData []float64) mat.Matrix {
 	// forward propagation
 	inputs := mat.NewDense(len(inputData), 1, inputData)
 	hiddenInputs := dot(net.hiddenWeights, inputs)
@@ -36,7 +40,7 @@ func (net Network) Predicate(inputData []float64) mat.Matrix {
 }
 
 // Train the neural network
-func (net *Network) Train(inputData []float64, targetData []float64) {
+func (net *NNetwork) Train(inputData []float64, targetData []float64) {
 	// feedforward
 	inputs := mat.NewDense(len(inputData), 1, inputData)
 	hiddenInputs := dot(net.hiddenWeights, inputs)
