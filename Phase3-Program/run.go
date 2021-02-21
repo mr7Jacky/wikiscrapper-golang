@@ -1,5 +1,5 @@
-package main
+package digit_recognition
 
 func main() {
-	$END$
+	
 }
