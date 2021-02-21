@@ -25,7 +25,7 @@ func CreateNetwork(input, hidden, output int, rate float64) (net Network) {
 	return
 }
 
-func (net Network) FeedForward(inputData []float64) mat.Matrix {
+func (net Network) Predicate(inputData []float64) mat.Matrix {
 	// forward propagation
 	inputs := mat.NewDense(len(inputData), 1, inputData)
 	hiddenInputs := dot(net.hiddenWeights, inputs)
