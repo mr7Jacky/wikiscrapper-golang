@@ -1,4 +1,4 @@
-package main
+package nn
 
 import (
 	"gonum.org/v1/gonum/mat"
