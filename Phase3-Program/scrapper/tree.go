@@ -30,7 +30,6 @@ func (t *Tree) insert(link string, title string) {
 
 func (n *Node) insert(link string, title string) {
 	keys := strings.Split(link, "/")
-	fmt.Printf("%q\n", keys)
 	// Same level
 	if len(keys)-1 == n.level {
 		// Child level
@@ -49,7 +48,7 @@ func (n *Node) insert(link string, title string) {
 }
 
 func (t *Tree) PrintTree() {
-	recurPrint(t.root)
+	LevelOrderTraversal(t.root)
 }
 
 func recurPrint(root *Node) {
@@ -62,21 +61,27 @@ func recurPrint(root *Node) {
 	}
 }
 
-func print2DUtil(root *Node, space int) {
-	// Base case
+func LevelOrderTraversal(root *Node) {
 	if root == nil {
 		return
 	}
-	// Increase distance between levels
-	COUNT := 10
-	space += COUNT
 
-	for _, c := range root.child {
-		print2DUtil(c, space)
+	// Standard level order traversal code
+	// using queue
+	var q []*Node // Create a queue
+	q = append(q, root)
+	for len(q) != 0 {
+		n := len(q)
+		for n > 0 {
+			p := q[0]
+			q = q[1:]
+			fmt.Printf("%s ", p.title)
+			for i := 0; i < len(p.child); i++ {
+				q = append(q, p.child[i])
+			}
+			n--
+		}
+		fmt.Println()
 	}
-	fmt.Println()
-	for i := 1; i < COUNT; i++ {
-		fmt.Print(" ")
-	}
-	fmt.Printf("%s\n", root.title)
+
 }
