@@ -42,4 +42,12 @@ func scp() {
 }
 
 func main() {
+	t := NewTree("Https://", "idex")
+	t.insert("https://www.google.com/", "Google")
+	t.insert("https://www.google.com/Doc/", "Google-doc")
+	t.insert("https://www.google.com/Car/", "Google-car")
+	t.insert("https://www.google.com/News/", "Google-news")
+	t.insert("https://www.google.com/Doc/News/", "Google-doc-news")
+	t.insert("https://www.baidu.com/", "Baidu")
+	t.PrintTree()
 }

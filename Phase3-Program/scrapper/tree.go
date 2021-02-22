@@ -13,7 +13,6 @@ type Node struct {
 }
 
 func NewNode(link string, title string) *Node {
-	fmt.Printf("%q\n", strings.Split(link, "/"))
 	return &Node{level: len(strings.Split(link, "/")), title: title, link: link, child: nil}
 }
 
@@ -31,17 +30,17 @@ func (t *Tree) insert(link string, title string) {
 
 func (n *Node) insert(link string, title string) {
 	keys := strings.Split(link, "/")
+	fmt.Printf("%q\n", keys)
 	// Same level
-	fmt.Printf("%d, %d\n", n.level, len(keys)-1)
 	if len(keys)-1 == n.level {
 		// Child level
 		newN := NewNode(link, title)
 		n.child = append(n.child, newN)
-
 	} else {
 		// Lower Level
 		for _, c := range n.child {
-			if keys[c.level-1] == strings.Split(c.link, "/")[c.level-1] {
+			cKeys := strings.Split(c.link, "/")
+			if keys[c.level-2] == cKeys[c.level-2] {
 				c.insert(link, title)
 				break
 			}
@@ -50,5 +49,34 @@ func (n *Node) insert(link string, title string) {
 }
 
 func (t *Tree) PrintTree() {
-	fmt.Println("Tree")
+	recurPrint(t.root)
+}
+
+func recurPrint(root *Node) {
+	if root == nil {
+		return
+	}
+	fmt.Printf("layer: %d Name: %s\n", root.level, root.title)
+	for _, c := range root.child {
+		recurPrint(c)
+	}
+}
+
+func print2DUtil(root *Node, space int) {
+	// Base case
+	if root == nil {
+		return
+	}
+	// Increase distance between levels
+	COUNT := 10
+	space += COUNT
+
+	for _, c := range root.child {
+		print2DUtil(c, space)
+	}
+	fmt.Println()
+	for i := 1; i < COUNT; i++ {
+		fmt.Print(" ")
+	}
+	fmt.Printf("%s\n", root.title)
 }
