@@ -53,7 +53,8 @@ func indexHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func searchHandler(newsapi *Client) http.HandlerFunc {
+// searchHandler handle the search inquiries and send the search result back to web
+func searchHandler(client *Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		u, err := url.Parse(r.URL.String())
 		if err != nil {
@@ -68,7 +69,7 @@ func searchHandler(newsapi *Client) http.HandlerFunc {
 			page = "1"
 		}
 
-		results, err := newsapi.FetchEverything(searchQuery)
+		results, err := client.FetchEverything(searchQuery)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -83,7 +84,7 @@ func searchHandler(newsapi *Client) http.HandlerFunc {
 		search := &SearchRet{
 			Query:      searchQuery,
 			NextPage:   nextPage,
-			TotalPages: int(math.Ceil(float64(results.TotalResults / newsapi.PageSize))),
+			TotalPages: int(math.Ceil(float64(results.TotalResults / client.PageSize))),
 			Results:    results,
 		}
 
@@ -118,13 +119,13 @@ func main() {
 	}
 
 	myClient := &http.Client{Timeout: 10 * time.Second}
-	newsapi := NewClient(myClient, 20)
+	client := NewClient(myClient, 20)
 
 	fs := http.FileServer(http.Dir("assets"))
 
 	mux := http.NewServeMux()
 	mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
-	mux.HandleFunc("/search", searchHandler(newsapi))
+	mux.HandleFunc("/search", searchHandler(client))
 	mux.HandleFunc("/", indexHandler)
 	err = http.ListenAndServe(":"+port, mux)
 	if err != nil {

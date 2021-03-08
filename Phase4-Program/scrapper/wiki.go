@@ -98,13 +98,12 @@ func wikiIntroScrape(wikiLink string) (description string, title string, content
 			// Else append to our paragraphs to show later
 			paragraphs = append(paragraphs, selection.Text())
 		}
-
 	})
-	// Print the title
+	// Print the title, Check the info
 	fmt.Printf("Introduction of %s:\n\n", pageTitle)
 	fmt.Println(paragraphs[0])
-	// Print the content of paragraph
-	content := printContents(paragraphs, 0, len(paragraphs))
+	// Obtain the content of paragraph
+	content := getContents(paragraphs, 0, len(paragraphs))
 
 	return paragraphs[0], pageTitle, content
 }
@@ -118,8 +117,4 @@ func Search(key string) (description string, title string, contents string, wiki
 	fmt.Printf("[INFO] The most relevant link is: %s\n", wikiLink)
 	description, title, contents = wikiIntroScrape(wikiLink)
 	return description, title, contents, wikiLink
-}
-
-func mainq() {
-	wikiIntroScrape("https://en.wikipedia.org/wiki/Iron_Man")
 }

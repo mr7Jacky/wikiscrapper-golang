@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-func printContents(contents []string, start int, end int) (str string) {
+// getContents used to concatenate all strings in contents to an output string
+func getContents(contents []string, start int, end int) (str string) {
 	str = ""
 	for i := start; i < end; i++ {
 		str += contents[i]
@@ -65,9 +66,4 @@ func reformatSearchKey(key string) string {
 	splitKey := strings.Split(key, " ")
 	reformatKey = strings.Join(splitKey, "+")
 	return reformatKey
-}
-
-func splitParagraph(paragraph string) {
-	splitKey := strings.Split(paragraph, "\n")
-	fmt.Println(splitKey)
 }
