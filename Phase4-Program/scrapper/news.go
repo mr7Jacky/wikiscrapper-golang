@@ -43,6 +43,5 @@ func NewClient(httpClient *http.Client, pageSize int) *Client {
 	if pageSize > 100 {
 		pageSize = 100
 	}
-
 	return &Client{httpClient, pageSize}
 }

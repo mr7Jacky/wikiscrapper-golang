@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 func printContents(contents []string, start int, end int) (str string) {
 	str = ""
-	for i := end - 1; i > start; i-- {
-		fmt.Print(contents[i])
-		fmt.Println()
+	for i := start; i < end; i++ {
 		str += contents[i]
 	}
 	return str
@@ -39,14 +38,16 @@ func LCS(first string, second string) int {
 
 // modifySigmoid is a revised sigmoid function fit in the program
 func modifySigmoid(x int) float64 {
-	return (-200)/(1+math.Exp(-0.05*float64(x))) + 200
+	return -100/(1+math.Exp(-0.05*float64(x-50))) + 100
 }
 
 // maxArg returns the argument corresponding to the max value in the list
 func maxArg(list []float64) int {
-	maxNum := 0.0
-	maxIdx := 0
-	l := len(list)
+	var maxNum float64
+	var maxIdx, l int
+	maxNum = float64(math.MinInt8)
+	maxIdx = 0
+	l = len(list)
 	for i := 0; i < l; i++ {
 		if list[i] > maxNum {
 			maxNum = list[i]
@@ -54,4 +55,19 @@ func maxArg(list []float64) int {
 		}
 	}
 	return maxIdx
+}
+
+// reformatSearchKey is used for return the correct format of search key
+// e.g. "Iron Man" becomes "Iron+Man"
+func reformatSearchKey(key string) string {
+	fmt.Println(key)
+	var reformatKey string
+	splitKey := strings.Split(key, " ")
+	reformatKey = strings.Join(splitKey, "+")
+	return reformatKey
+}
+
+func splitParagraph(paragraph string) {
+	splitKey := strings.Split(paragraph, "\n")
+	fmt.Println(splitKey)
 }

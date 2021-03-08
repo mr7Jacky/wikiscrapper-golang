@@ -16,6 +16,9 @@ func wikiSearchLinkGenerator(searchKey string) string {
 	link := "https://en.wikipedia.org/wiki/Special:Search?search=" +
 		searchKey +
 		"&fulltext=Search+Portal+namespace&fulltext=Search&ns0=1"
+	link = "https://en.wikipedia.org/w/index.php?search=" +
+		searchKey +
+		"&title=Special:Search&profile=advanced&fulltext=1&ns0=1"
 	return link
 }
 
@@ -35,12 +38,15 @@ func wikiPageScrape(searchLink string, target string) string {
 	collector.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		// Obtain the link
 		link := e.Attr("href")
+		if strings.HasPrefix(link, "#") {
+			return
+		}
 		// Calculate the score
-		score := modifySigmoid(len(link) - LCS(target, link))
+		score := modifySigmoid(len(link) - LCS(strings.ToLower(target), strings.ToLower(link)))
 		// Obtain the full URL
 		absoluteURL := e.Request.AbsoluteURL(link)
 		// Print the score and link
-		fmt.Printf("[Score: %.3f] Link: %s\n", score, absoluteURL)
+		fmt.Printf("[INFO][Score: %.10f] Link: %s\n", score, link)
 		// Append the score
 		scores = append(scores, score)
 		// Obtain the link
@@ -53,7 +59,7 @@ func wikiPageScrape(searchLink string, target string) string {
 		log.Fatal(err)
 	}
 	// Print the total number of link obtained
-	fmt.Printf("[Info] Obtain total %d link\n", len(allLink))
+	fmt.Printf("[INFO] Obtain total %d link\n", len(allLink))
 	// Calculate the index of link with the max score
 	maxScoreIndex := maxArg(scores)
 	// Return the link with the max score
@@ -77,15 +83,12 @@ func wikiIntroScrape(wikiLink string) (description string, title string, content
 	// filtered by a selector. It returns a new Selection object containing these matched elements.
 	// We use Find() to obtain the title of the website
 	pageTitle = doc.Find("h1").Contents().Text()
-	// Find the end point of the introduction Part which is the contents with id toc
-	IntroEnd := doc.Find("div#toc")
-	// gets all the preceding siblings of each element in the Selection (IntroEndPrev)
-	// filtered by a selector. It returns a new Selection object containing the matched elements.
-	IntroEndPrev := IntroEnd.PrevAllFiltered("p")
+	// Find the first point match <p>
+	firstParagraph := doc.Find("p")
 	// iterates over a Selection object
 	// executing a function for each matched element
 	// It returns the current Selection object.
-	IntroEndPrev.Each(func(i int, selection *goquery.Selection) {
+	firstParagraph.Each(func(i int, selection *goquery.Selection) {
 		// Check if the current Selection is only contains spaces, including \t, \n <space>
 		curText := strings.TrimSpace(selection.Text())
 		if len(curText) == 0 {
@@ -99,16 +102,24 @@ func wikiIntroScrape(wikiLink string) (description string, title string, content
 	})
 	// Print the title
 	fmt.Printf("Introduction of %s:\n\n", pageTitle)
+	fmt.Println(paragraphs[0])
 	// Print the content of paragraph
 	content := printContents(paragraphs, 0, len(paragraphs))
-	return paragraphs[len(paragraphs)-1], pageTitle, content
+
+	return paragraphs[0], pageTitle, content
 }
 
 // Search is the function used to search the keyword
 func Search(key string) (description string, title string, contents string, wikiLink string) {
+	key = reformatSearchKey(key)
+	fmt.Println(key)
 	wikiLink = wikiSearchLinkGenerator(key)
 	wikiLink = wikiPageScrape(wikiLink, key)
 	fmt.Printf("[INFO] The most relevant link is: %s\n", wikiLink)
 	description, title, contents = wikiIntroScrape(wikiLink)
 	return description, title, contents, wikiLink
+}
+
+func mainq() {
+	wikiIntroScrape("https://en.wikipedia.org/wiki/Iron_Man")
 }
