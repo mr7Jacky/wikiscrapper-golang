@@ -1,3 +1,4 @@
+// This file contains all the functions that will be used for scraping from wikipedia
 package main
 
 import (
@@ -115,10 +116,13 @@ func wikiIntroScrape(wikiLink string) (description string, title string, content
 	return paragraphs[0], pageTitle, content
 }
 
+// createWikiContents is used to create Article list from given links
 func createWikiContents(links []string) []Article {
+	// Initialize
 	var articles []Article
 	var description, title, contents string
 	articles = make([]Article, len(links))
+	// Loop all the link and create a short article overview
 	for i, link := range links {
 		description, title, contents = wikiIntroScrape(link)
 		articles[i] = Article{

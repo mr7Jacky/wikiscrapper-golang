@@ -1,3 +1,4 @@
+// This file contains all the helper function that is used in this projects
 package main
 
 import (

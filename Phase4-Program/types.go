@@ -1,3 +1,4 @@
+// This file contains all the types that is used in project
 package main
 
 import "net/http"
@@ -17,7 +18,13 @@ type Results struct {
 	Articles     []Article `json:"articles"`
 }
 
+// Client used for sending request to the server
 type Client struct {
-	http     *http.Client
-	PageSize int
+	http *http.Client
+}
+
+// SearchRet stores the searching result
+type SearchRet struct {
+	Query   string
+	Results *Results
 }
