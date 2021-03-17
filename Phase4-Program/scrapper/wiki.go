@@ -23,11 +23,12 @@ func wikiSearchLinkGenerator(searchKey string) string {
 }
 
 // wikiPageScrape will find the most relevant link in searching result
-func wikiPageScrape(searchLink string, target string) string {
+func wikiPageScrape(searchLink string, target string, numLink int) []string {
 	// Create list to store the scores
 	var scores []float64
 	// A list to store all the links
-	var allLink []string
+	// A list to save return links
+	var allLink, retLink []string
 	// Create a new collector object
 	collector := colly.NewCollector(
 		// Limited to visiting domain to wikipedia
@@ -61,9 +62,15 @@ func wikiPageScrape(searchLink string, target string) string {
 	// Print the total number of link obtained
 	fmt.Printf("[INFO] Obtain total %d link\n", len(allLink))
 	// Calculate the index of link with the max score
-	maxScoreIndex := maxArg(scores)
+	// Another method to use: maxScoreIndex := maxArg(scores)
+	// Obtain the top n highest score
+	topIndex := topNIndex(numLink, scores)
+	retLink = make([]string, numLink)
+	for i, idx := range topIndex {
+		retLink[i] = allLink[idx]
+	}
 	// Return the link with the max score
-	return allLink[maxScoreIndex]
+	return retLink
 }
 
 // wikiIntroScrape scrape the introduction part of the wikipedia,
@@ -108,13 +115,37 @@ func wikiIntroScrape(wikiLink string) (description string, title string, content
 	return paragraphs[0], pageTitle, content
 }
 
+func createWikiContents(links []string) []Article {
+	var articles []Article
+	var description, title, contents string
+	articles = make([]Article, len(links))
+	for i, link := range links {
+		description, title, contents = wikiIntroScrape(link)
+		articles[i] = Article{
+			Author:      "WIKIPEDIA",
+			Title:       title,
+			Description: description,
+			URL:         link,
+			Content:     contents,
+		}
+	}
+	return articles
+}
+
 // Search is the function used to search the keyword
-func Search(key string) (description string, title string, contents string, wikiLink string) {
+func Search(key string) []Article {
+	// Reformat search key with multiple key words
 	key = reformatSearchKey(key)
 	fmt.Println(key)
+	// Generate the link for searching
+	var wikiLink string
 	wikiLink = wikiSearchLinkGenerator(key)
-	wikiLink = wikiPageScrape(wikiLink, key)
-	fmt.Printf("[INFO] The most relevant link is: %s\n", wikiLink)
-	description, title, contents = wikiIntroScrape(wikiLink)
-	return description, title, contents, wikiLink
+	// Obtain the most related links
+	var topLinks []string
+	topLinks = wikiPageScrape(wikiLink, key, 5)
+	fmt.Printf("[INFO] The most relevant link is: %s\n", topLinks)
+	// Create a wiki preview articles and link
+	var articles []Article
+	articles = createWikiContents(topLinks)
+	return articles
 }

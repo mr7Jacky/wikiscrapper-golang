@@ -5,15 +5,8 @@ import (
 )
 
 func (c *Client) FetchEverything(query string) (*Results, error) {
-	description, title, contents, link := Search(query)
-	a := Article{
-		Author:      "WIKIPEDIA",
-		Title:       title,
-		Description: description,
-		URL:         link,
-		Content:     contents,
-	}
-	aList := []Article{a}
+
+	aList := Search(query)
 	res := &Results{
 		TotalResults: 1,
 		Articles:     aList,

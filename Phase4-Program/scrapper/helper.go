@@ -67,3 +67,46 @@ func reformatSearchKey(key string) string {
 	reformatKey = strings.Join(splitKey, "+")
 	return reformatKey
 }
+
+// topNIndex obtains the index of top n highest scores in a given list
+func topNIndex(n int, list []float64) []int {
+	// Initialization
+	var l, curIndex, tmpIndex int
+	var topScores []float64
+	var topIndex []int
+	topScores = make([]float64, n)
+	topIndex = make([]int, n)
+	// if the length of list is short than the given top n
+	// Provide all the item index in list
+	l = len(list)
+	if l < n {
+		n = l
+		for i := 0; i < l; i++ {
+			topIndex[i] = i
+		}
+	} else {
+		// Else find the top n index with top n highest scores
+		var curScore, tmpScore float64
+		for i := 0; i < l; i++ {
+			curScore = list[i]
+			curIndex = i
+			for j := 0; j < n; j++ {
+				if topScores[j] == curScore {
+					break
+				}
+				if topScores[j] < curScore {
+					// Assign score and index to temp value for swap
+					tmpScore = topScores[j]
+					tmpIndex = topIndex[j]
+					// Assign the value to lists to save
+					topScores[j] = curScore
+					topIndex[j] = curIndex
+					// Finish swap
+					curScore = tmpScore
+					curIndex = tmpIndex
+				}
+			}
+		}
+	}
+	return topIndex
+}
