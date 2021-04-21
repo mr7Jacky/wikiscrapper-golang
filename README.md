@@ -27,4 +27,4 @@ A quick view searching website specifically targeted on scraping information fro
 The detailed description of the program can be found [here](./Phase4-Program/README.md)
 
 #### [Report](GolangReport.md)
-This report answers some questions related to characteristics of programing language. These questions are stating in the end of the [project description]()
+This report answers some questions related to characteristics of programing language. These questions are stating in the end of the [project description](ProjDetails.pdf)
